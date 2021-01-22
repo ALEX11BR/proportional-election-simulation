@@ -9,7 +9,7 @@
 	export let treshold: number;
 	export let nullVotes: number;
 
-	$: results = parties.length ? dHontResults(parties, seats, treshold, nullVotes) : []; 
+	$: [ results, nullVotesPercentage ] = dHontResults(parties, seats, treshold, nullVotes); 
 
 	function addParty() {
 		parties = [ ...parties, {
@@ -48,15 +48,15 @@
 					<Input type="number" bind:value={seats} />
 				</Col>
 				<Col xs=6>
-					<h6>Treshold (%)</h6>
-					<Input type="number" bind:value={treshold} />
+					<h6>Null votes</h6>
+					<Input type="number" bind:value={nullVotes} />
 				</Col>
 			</Row>
 			<br />
 			<Row>
 				<Col xs=6>
-					<h6>Null votes</h6>
-					<Input type="number" bind:value={nullVotes} />
+					<h6>Treshold (%)</h6>
+					<Input type="number" bind:value={treshold} />
 				</Col>
 				<Col xs=6>
 					<h6>Distribution method</h6>
@@ -81,11 +81,16 @@
 					<tbody>
 						{#each results as result}
 							<tr>
-								<th>{result.name}</th>
-								<th>{(result.percentage).toFixed(2)}%</th>
-								<th>{result.seats}</th>
+								<td>{result.name}</td>
+								<td>{result.percentage.toFixed(2)}%</td>
+								<td>{result.seats}</td>
 							</tr>
 						{/each}
+						<tr class="null-votes">
+							<td>Null votes</td>
+							<td>{nullVotesPercentage.toFixed(2)}%</td>
+							<td>N/A</td>
+						</tr>
 					</tbody>
 				</Table>
 			{:else}

@@ -6,7 +6,7 @@ export interface Result {
 	seats: number
 }
 
-function getPercentages(parties: Party[], nullVotes: number) {
+function getPercentages(parties: Party[], nullVotes: number): [ number[], number ] {
 	var voters = nullVotes;
 	for (const party of parties) {
 		voters += party.votes;
@@ -17,13 +17,18 @@ function getPercentages(parties: Party[], nullVotes: number) {
 		percentages.push(party.votes*100/voters);
 	}
 
-	return percentages;
+	return [ percentages, nullVotes*100/voters ];
 }
 
-export function dHontResults(parties: Party[], seats: number, treshold: number, nullVotes: number) {
+export function dHontResults(parties: Party[], seats: number, treshold: number, nullVotes: number): [ Result[], number ] {
+	// If we further calculate the percentages of an empty list of parties, the program crashes
+	if (parties.length === 0) {
+		return [ [], 0];
+	}
+
 	var results: Result[] = [];
 	var quotinents = [];
-	var percentages = getPercentages(parties, nullVotes);
+	var [ percentages, nullVotesPercentage ] = getPercentages(parties, nullVotes);
 	
 	// Generating the results array; setting the coeficient as the number of votes for each party
 	for (var i = 0; i < parties.length; i++) {
@@ -51,8 +56,8 @@ export function dHontResults(parties: Party[], seats: number, treshold: number, 
 		}
 	}
 
-	// Sort the results decreasingly by percentage and return them 
-	return results.sort((a, b) => {
+	// Sort the results decreasingly by percentage and return them with the null votes percentage
+	return [ results.sort((a, b) => {
 		return b.percentage - a.percentage;
-	});
+	}), nullVotesPercentage ];
 }
