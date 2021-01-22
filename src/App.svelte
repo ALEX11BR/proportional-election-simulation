@@ -1,15 +1,16 @@
 <script lang="ts">
 	import { Container, Row, Col, Input, Navbar, NavbarBrand, Table, ListGroup, ListGroupItem } from 'sveltestrap';
 	import ShowParty from './ShowParty.svelte';
-	import { dHontResults } from './GetResults';
+	import { votingMethods } from './GetResults';
 	import type Party from './Party';
 
 	export let parties: Party[];
 	export let seats: number;
 	export let treshold: number;
 	export let nullVotes: number;
+	export let method: string;
 
-	$: [ results, nullVotesPercentage ] = dHontResults(parties, seats, treshold, nullVotes); 
+	$: [ results, nullVotesPercentage ] = votingMethods[method](parties, seats, treshold, nullVotes); 
 
 	function addParty() {
 		parties = [ ...parties, {
@@ -48,8 +49,12 @@
 					<Input type="number" bind:value={seats} />
 				</Col>
 				<Col xs=6>
-					<h6>Null votes</h6>
-					<Input type="number" bind:value={nullVotes} />
+					<h6>Distribution method</h6>
+					<Input type="select" bind:value={method}>
+						{#each Object.keys(votingMethods) as votingMethod}
+							<option>{votingMethod}</option>
+						{/each}
+					</Input>
 				</Col>
 			</Row>
 			<br />
@@ -59,10 +64,8 @@
 					<Input type="number" bind:value={treshold} />
 				</Col>
 				<Col xs=6>
-					<h6>Distribution method</h6>
-					<Input type="select">
-						<option>D'hondt</option>
-					</Input>
+					<h6>Null votes</h6>
+					<Input type="number" bind:value={nullVotes} />
 				</Col>
 			</Row>
 			<br />

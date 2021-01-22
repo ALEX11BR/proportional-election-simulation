@@ -9,7 +9,8 @@ const app = new App({
 		}],
 		seats: 10,
 		treshold: 0,
-		nullVotes: 0
+		nullVotes: 0,
+		method: "D'hondt"
 	}
 });
 
