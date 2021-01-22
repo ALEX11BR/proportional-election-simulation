@@ -8,7 +8,8 @@ const app = new App({
 			votes: 1
 		}],
 		seats: 10,
-		treshold: 0
+		treshold: 0,
+		nullVotes: 0
 	}
 });
 

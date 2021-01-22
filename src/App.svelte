@@ -7,8 +7,9 @@
 	export let parties: Party[];
 	export let seats: number;
 	export let treshold: number;
+	export let nullVotes: number;
 
-	$: results = parties.length ? dHontResults(parties, seats, treshold) : []; 
+	$: results = parties.length ? dHontResults(parties, seats, treshold, nullVotes) : []; 
 
 	function addParty() {
 		parties = [ ...parties, {
@@ -49,6 +50,19 @@
 				<Col xs=6>
 					<h6>Treshold (%)</h6>
 					<Input type="number" bind:value={treshold} />
+				</Col>
+			</Row>
+			<br />
+			<Row>
+				<Col xs=6>
+					<h6>Null votes</h6>
+					<Input type="number" bind:value={nullVotes} />
+				</Col>
+				<Col xs=6>
+					<h6>Distribution method</h6>
+					<Input type="select">
+						<option>D'hondt</option>
+					</Input>
 				</Col>
 			</Row>
 			<br />
