@@ -8,7 +8,7 @@ const app = new App({
 			votes: 1
 		}],
 		seats: 10,
-		treshold: 0,
+		threshold: 0,
 		nullVotes: 0,
 		method: "D'hondt"
 	}

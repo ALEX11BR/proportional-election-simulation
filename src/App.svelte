@@ -1,18 +1,19 @@
 <script lang="ts">
 	import { Container, Row, Col, Input, Navbar, NavbarBrand, Table, ListGroup, ListGroupItem } from 'sveltestrap';
 	import ShowParty from './ShowParty.svelte';
-	import { votingMethods, Result } from './GetResults';
+	import { votingMethods } from './GetResults';
+	import type Result from './Result';
 	import type Party from './Party';
 
 	export let parties: Party[];
 	export let seats: number;
-	export let treshold: number;
+	export let threshold: number;
 	export let nullVotes: number;
 	export let method: string;
 
 	var results: Result[];
 	var nullVotesPercentage: number;
-	$: [ results, nullVotesPercentage ] = votingMethods[method](parties, seats, treshold, nullVotes); 
+	$: [ results, nullVotesPercentage ] = votingMethods[method](parties, seats, threshold, nullVotes); 
 
 	function addParty() {
 		parties = [ ...parties, {
@@ -62,8 +63,8 @@
 			<br />
 			<Row>
 				<Col xs=6>
-					<h6>Treshold (%)</h6>
-					<Input type="number" bind:value={treshold} />
+					<h6>Threshold (%)</h6>
+					<Input type="number" bind:value={threshold} />
 				</Col>
 				<Col xs=6>
 					<h6>Null votes</h6>
@@ -78,7 +79,7 @@
 				<Table bordered>
 					<thead class="thead-light">
 						<tr>
-							<th>Party Name</th>
+							<th>Party name</th>
 							<th>Share of the vote</th>
 							<th>Seats</th>
 						</tr>

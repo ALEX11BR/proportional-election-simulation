@@ -1,10 +1,5 @@
 import type Party from './Party';
-
-export interface Result {
-	name: string,
-	percentage: number,
-	seats: number
-}
+import type Result from './Result';
 
 interface Remainder {
 	id: number,
@@ -20,7 +15,7 @@ function getVoters(parties: Party[], nullVotes: number) {
 	return [ nullVotes*100/voters, voters ];
 }
 
-function highestAveragesCalculator(parties: Party[], seats: number, treshold: number, nullVotes: number, quotinentFn: (votes: number, seats: number) => number): [ Result[], number ] {
+function highestAveragesCalculator(parties: Party[], seats: number, threshold: number, nullVotes: number, quotinentFn: (votes: number, seats: number) => number): [ Result[], number ] {
 	// For an empty parties array, return early an empty result array, that the Svelte view handles nicely, and save the function body from some unexpected consequences
 	if (parties.length === 0) {
 		return [ [], 0];
@@ -45,12 +40,12 @@ function highestAveragesCalculator(parties: Party[], seats: number, treshold: nu
 		var maxQuotinent = 0;
 		var currentWinner = -1;
 		for (var i = 0; i < parties.length; i++) {
-			if (maxQuotinent < quotinents[i] && results[i].percentage >= treshold) {
+			if (maxQuotinent < quotinents[i] && results[i].percentage >= threshold) {
 				maxQuotinent = quotinents[i];
 				currentWinner = i;
 			}
 		}
-		// If no party passes the treshold, the current winner stays -1, and no one will get a seat
+		// If no party passes the threshold, the current winner stays -1, and no one will get a seat
 		if (currentWinner > -1) {
 			results[currentWinner].seats++;
 			quotinents[currentWinner] = quotinentFn(parties[currentWinner].votes, results[currentWinner].seats);
@@ -62,14 +57,14 @@ function highestAveragesCalculator(parties: Party[], seats: number, treshold: nu
 		return b.percentage - a.percentage;
 	}), nullVotesPercentage ];
 }
-export function dHontResults(parties: Party[], seats: number, treshold: number, nullVotes: number): [ Result[], number ] {
-	return highestAveragesCalculator(parties, seats, treshold, nullVotes, (votes: number, seats: number) => votes / (seats + 1));
+export function dHontResults(parties: Party[], seats: number, threshold: number, nullVotes: number): [ Result[], number ] {
+	return highestAveragesCalculator(parties, seats, threshold, nullVotes, (votes: number, seats: number) => votes / (seats + 1));
 }
-export function websterResults(parties: Party[], seats: number, treshold: number, nullVotes: number): [ Result[], number ] {
-	return highestAveragesCalculator(parties, seats, treshold, nullVotes, (votes: number, seats: number) => votes / (2*seats + 1));
+export function websterResults(parties: Party[], seats: number, threshold: number, nullVotes: number): [ Result[], number ] {
+	return highestAveragesCalculator(parties, seats, threshold, nullVotes, (votes: number, seats: number) => votes / (2*seats + 1));
 }
 
-function largestRemainderCalculator(parties: Party[], seats: number, treshold: number, nullVotes: number, quotaFn: (votes: number, seats: number) => number): [ Result[], number ] {
+function largestRemainderCalculator(parties: Party[], seats: number, threshold: number, nullVotes: number, quotaFn: (votes: number, seats: number) => number): [ Result[], number ] {
 	// For an empty parties array, return early an empty result array, that the Svelte view handles nicely, and save the function body from some unexpected consequences
 	if (parties.length === 0) {
 		return [ [], 0];
@@ -82,12 +77,12 @@ function largestRemainderCalculator(parties: Party[], seats: number, treshold: n
 
 	const quota = quotaFn(voters - nullVotes, seats);
 
-	// Generating the results & remainders (only for parties over the treshold) arrays
+	// Generating the results & remainders (only for parties over the threshold) arrays
 	for (var i = 0; i < parties.length; i++) {
 		const percentage = parties[i].votes*100/voters;
-		const partySeats = percentage >= treshold ? parties[i].votes/quota : 0;
+		const partySeats = percentage >= threshold ? parties[i].votes/quota : 0;
 		
-		if (percentage >= treshold) {
+		if (percentage >= threshold) {
 			remainders.push({
 				id: i,
 				remainder: partySeats % 1
@@ -124,11 +119,11 @@ function largestRemainderCalculator(parties: Party[], seats: number, treshold: n
 		return b.percentage - a.percentage;
 	}), nullVotesPercentage ];
 }
-export function largestRemainderHareResults(parties: Party[], seats: number, treshold: number, nullVotes: number): [ Result[], number ] {
-	return largestRemainderCalculator(parties, seats, treshold, nullVotes, (votes: number, seats: number) => votes/seats);
+export function largestRemainderHareResults(parties: Party[], seats: number, threshold: number, nullVotes: number): [ Result[], number ] {
+	return largestRemainderCalculator(parties, seats, threshold, nullVotes, (votes: number, seats: number) => votes/seats);
 }
-export function largestRemainderDroopResults(parties: Party[], seats: number, treshold: number, nullVotes: number): [ Result[], number ] {
-	return largestRemainderCalculator(parties, seats, treshold, nullVotes, (votes: number, seats: number) => Math.floor(1 + (votes / (seats+1))));
+export function largestRemainderDroopResults(parties: Party[], seats: number, threshold: number, nullVotes: number): [ Result[], number ] {
+	return largestRemainderCalculator(parties, seats, threshold, nullVotes, (votes: number, seats: number) => Math.floor(1 + (votes / (seats+1))));
 }
 
 export const votingMethods = {
