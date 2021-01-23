@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Container, Row, Col, Input, Navbar, NavbarBrand, Table, ListGroup, ListGroupItem } from 'sveltestrap';
 	import ShowParty from './ShowParty.svelte';
-	import { votingMethods } from './GetResults';
+	import { votingMethods, Result } from './GetResults';
 	import type Party from './Party';
 
 	export let parties: Party[];
@@ -10,6 +10,8 @@
 	export let nullVotes: number;
 	export let method: string;
 
+	var results: Result[];
+	var nullVotesPercentage: number;
 	$: [ results, nullVotesPercentage ] = votingMethods[method](parties, seats, treshold, nullVotes); 
 
 	function addParty() {
